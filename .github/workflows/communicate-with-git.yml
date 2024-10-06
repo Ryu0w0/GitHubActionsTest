@@ -31,17 +31,14 @@ jobs:
         echo it makes changes >> test.yml
 
     - name: How to detect changes - git diff --name-only
-      id: check_changes
       run: |
         git diff --name-only
 
     - name: How to detect changes - git diff --name-only --cached
-      id: check_changes
       run: |
         git diff --name-only --cached
 
     - name: How to detect changes - git status --short
-      id: check_changes
       run: |
         git status --short
 
