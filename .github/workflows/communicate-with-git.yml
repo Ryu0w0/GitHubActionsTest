@@ -55,4 +55,4 @@ jobs:
         branch: ${{ env.branch_name }}
         title: "New PR from feature"
         body: "This PR was created automatically by GitHub Actions."
-        base: main
+        base: master
