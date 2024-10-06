@@ -1,0 +1,59 @@
+name: Run to know how to communicate with git
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-dbt-osmosis:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get branch name
+      run: |
+        echo "branch_name=branch-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+
+    - name: Create new local branch
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -b ${{ env.branch_name }}
+
+    - name: Make changes for test
+      run: |
+        echo it makes changes >> test.yml
+
+    - name: How to detect changes - git diff --name-only
+      id: check_changes
+      run: |
+        git diff --name-only
+
+    - name: How to detect changes - git diff --name-only --cached
+      id: check_changes
+      run: |
+        git diff --name-only --cached
+
+    - name: How to detect changes - git status --short
+      id: check_changes
+      run: |
+        git status --short
+
+    - name: commit and push changes to remote branch
+      run: |
+        git add .
+        git commit -m "Create new branch and add changes"
+        git push origin ${{ env.branch_name }}
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ env.branch_name }}
+        title: "New PR from feature"
+        body: "This PR was created automatically by GitHub Actions."
+        base: main
